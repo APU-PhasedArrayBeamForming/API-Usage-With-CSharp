@@ -45,13 +45,21 @@ namespace RSPSample1
 
         //used with getDevices
         //perhaps change to a class?
-        //private struct mir_sdr_DeviceT
-        //{
-        //   char SerNo;
-        //   string DevNm;
-        //   string hwVer;
-        //   string devAvail;
-       //}
+        public unsafe struct mir_sdr_DeviceT
+        {
+            public char* SerNo;
+            public char* DevNm;
+            public byte hwVer;
+            public byte devAvail;
+
+            public mir_sdr_DeviceT(char* p1, char* p2, byte p3, byte p4)
+            {
+                SerNo = p1;
+                DevNm = p2;
+                hwVer = p3;
+                devAvail = p4;
+            }
+        }
 
 
 
@@ -77,20 +85,21 @@ namespace RSPSample1
 
 
         //not working yet
-        //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //private static extern mir_sdr_ErrT mir_sdr_GetDevices(mir_sdr_DeviceT *devices, ref uint numDevs, ref uint maxDevs);
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private static extern mir_sdr_ErrT mir_sdr_GetDevices(mir_sdr_DeviceT[] devices, ref uint numDevs, uint maxDevs);
 
 
-        //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //private static extern mir_sdr_ErrT mir_sdr_SetDeviceIdx(uint idx);
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private static extern mir_sdr_ErrT mir_sdr_SetDeviceIdx(uint idx);
 
-        //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //private static extern mir_sdr_ErrT mir_sdr_ReleaseDeviceIdx();
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private static extern mir_sdr_ErrT mir_sdr_ReleaseDeviceIdx();
 
         static void Main(string[] args)
         {
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
+            mir_sdr_ErrT r;
 
 
             //make loop (or if/else statements if we have to) here: for (int z=0; z<8;z++)
@@ -108,26 +117,31 @@ namespace RSPSample1
 
             //actual code attempt:
 
-            //for (int z = 0; z < 8; z++)
-            //{
-            //unsure how to do this with pointers. (array of device objects ourDevices)
-            //uint numberDevs=1;
-            //uint maximumDevs=8;
-            //getDevices = mir_sdr_GetDevices(ref ourDevices, ref numberDevs, ref maximumDevs);
-            //if (getDevices != mir_sdr_ErrT.mir_sdr_Success)
-            //{
-            //  Console.WriteLine("Failed to get the IDs of the devices.");
-            //  return;
-            //}
-            //
-            //uint myIdx=z;
-            //myDevice = mir_srd_SetDeviceIdx(ref myIdx)
-            //if (myDevice != mir_sdr_ErrT.mir_sdr_Success)
-            //{
-            //  Console.WriteLine("Failed to set Device ID.");
-            //  return;
-            //}
+            for (int z = 0; z < 2; z++)
+            {
+                //unsure how to do this with pointers. (array of device objects ourDevices)
+                //Array of structures
+            mir_sdr_DeviceT[] ourDevices;
+            ourDevices = new mir_sdr_DeviceT[2];
 
+            uint numberDevs=1;
+            uint maximumDevs=8;
+            r = mir_sdr_GetDevices( ourDevices, ref numberDevs, maximumDevs);
+            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            {
+              Console.WriteLine("Failed to get the IDs of the devices.");
+              
+            }
+            
+            uint myIdx=Convert.ToUInt32(z);
+                r = mir_sdr_SetDeviceIdx(myIdx);
+            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            {
+              Console.WriteLine("Failed to set Device ID.");
+              
+            }
+            //Console.WriteLine(ourDevices[z].hwVer);
+            //Console.WriteLine(numberDevs); devices found with getdevices
 
             bool do_exit = false;
             //i changed this from 0, otherwise it just reads forever.
@@ -140,33 +154,33 @@ namespace RSPSample1
 
             uint firstSample = 0;
             int samplesPerPacket = 0, grChanged = 0, fsChanged = 0, rfChanged = 0;
-
+            string filename= "filename1.raw";
             //change output file depending on the device.
-            //if (z=0)
-            //{ string filename = "filename1.raw"; }
-            // else if (z=1)
-            //{ string filename = "filename2.raw"; }
-            // else if (z=2)
-            //{ string filename = "filename3.raw"; }
-            // else if (z=3)
-            //{ string filename = "filename3.raw"; }
-            // else if (z=4)
-            //{ string filename = "filename4.raw"; }
-            // else if (z=5)
-            //{ string filename = "filename5.raw"; }
-            // else if (z=6)
-            //{ string filename = "filename6.raw"; }
-            // else if (z=7)
-            //{ string filename = "filename7.raw"; }
-            // else if (z=8)
-            //{ string filename = "filename8.raw"; }
-            // else
-            //{Console.WriteLine("For loop is messed up."); return;}
+            if (z==0)
+            { filename = "filename1.raw"; }
+             else if (z==1)
+            { filename = "filename2.raw"; }
+             else if (z==2)
+            { filename = "filename3.raw"; }
+             else if (z==3)
+            { filename = "filename3.raw"; }
+             else if (z==4)
+            { filename = "filename4.raw"; }
+             else if (z==5)
+            { filename = "filename5.raw"; }
+             else if (z==6)
+            { filename = "filename6.raw"; }
+             else if (z==7)
+            { filename = "filename7.raw"; }
+             else if (z==8)
+            { filename = "filename8.raw"; }
+             else
+            {Console.WriteLine("For loop is messed up."); }
 
 
-            string filename = "filename1.raw"; // output file, containing raw IQ samples
+            //string filename = "filename1.raw"; // output file, containing raw IQ samples
             int n_read;
-            mir_sdr_ErrT r;
+            
 
             int gain = 50;
             FileStream file = new FileStream(filename, FileMode.Create);
@@ -185,7 +199,7 @@ namespace RSPSample1
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
-                return;
+                
             }
             mir_sdr_Uninit();
 
@@ -198,7 +212,7 @@ namespace RSPSample1
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
-                return;
+               
             }
             mir_sdr_SetDcMode(4, 0);
             mir_sdr_SetDcTrackTime(63);
@@ -249,16 +263,29 @@ namespace RSPSample1
             file.Close();
 
             //release Device
-            //deviceRelease = mir_srd_ReleaseDeviceIdx();
-            //if (deviceRelease != mir_sdr_ErrT.mir_sdr_Success)
-            //{
-            //  Console.WriteLine("Failed to release (or access for that matter) the Device.");
-            //  return;
-            //}
+            r = mir_sdr_ReleaseDeviceIdx();
+            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            {
+              Console.WriteLine("Failed to release (or access for that matter) the Device.");
+             
+            }
 
 
             mir_sdr_Uninit();
-            //}
+            }
         }
     }
+
+    //internal class mir_sdr_DeviceT
+    //{
+        //used with getDevices
+        //perhaps change to a class?
+        //private struct mir_sdr_DeviceT
+        //{
+        //   char SerNo;
+        //   string DevNm;
+        //   string hwVer;
+        //   string devAvail;
+        //}
+    //}
 }
