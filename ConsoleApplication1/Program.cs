@@ -95,7 +95,7 @@ namespace RSPSample1
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_ReleaseDeviceIdx();
 
-        static void Main(string[] args)
+        static unsafe void Main(string[] args)
         {
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
@@ -119,8 +119,11 @@ namespace RSPSample1
 
             for (int z = 0; z < 2; z++)
             {
-                //unsure how to do this with pointers. (array of device objects ourDevices)
                 //Array of structures
+            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT();
+            //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT();
+            
+            //or just have 
             mir_sdr_DeviceT[] ourDevices;
             ourDevices = new mir_sdr_DeviceT[2];
 
@@ -140,7 +143,12 @@ namespace RSPSample1
               Console.WriteLine("Failed to set Device ID.");
               
             }
-            //Console.WriteLine(ourDevices[z].hwVer);
+            //proves it is using different devices
+            //Console.WriteLine(myIdx);
+
+
+            //to check if it uses two different devices, doesnt work.
+            //Console.WriteLine(*ourDevices[z].SerNo);
             //Console.WriteLine(numberDevs); devices found with getdevices
 
             bool do_exit = false;
@@ -272,20 +280,10 @@ namespace RSPSample1
 
 
             mir_sdr_Uninit();
+            //read console
+
             }
+            Console.Read();
         }
     }
-
-    //internal class mir_sdr_DeviceT
-    //{
-        //used with getDevices
-        //perhaps change to a class?
-        //private struct mir_sdr_DeviceT
-        //{
-        //   char SerNo;
-        //   string DevNm;
-        //   string hwVer;
-        //   string devAvail;
-        //}
-    //}
 }
