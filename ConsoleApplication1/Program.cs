@@ -278,6 +278,9 @@ namespace RSPSample1
              
             }
 
+            Array.Clear(ibuf,0,ibuf.Length);
+            Array.Clear(qbuf,0,qbuf.Length);
+            Array.Clear(buffer,0,buffer.Length);
 
             mir_sdr_Uninit();
             
