@@ -269,6 +269,7 @@ namespace RSPSample1
             file.Flush();
             file.Close();
             binWriter.Close();
+            binWriter.Dispose();
 
             //release Device
             r = mir_sdr_ReleaseDeviceIdx();
