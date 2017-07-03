@@ -99,7 +99,7 @@ namespace RSPSample1
         {
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
-            mir_sdr_ErrT r;
+            
 
 
             //make loop (or if/else statements if we have to) here: for (int z=0; z<8;z++)
@@ -119,12 +119,13 @@ namespace RSPSample1
 
             for (int z = 0; z < 2; z++)
             {
+                mir_sdr_ErrT r;
                 //Array of structures
-            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT();
-            //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT();
-            
-            //or just have 
-            mir_sdr_DeviceT[] ourDevices;
+                //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT();
+                //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT();
+
+                //or just have 
+                mir_sdr_DeviceT[] ourDevices;
             ourDevices = new mir_sdr_DeviceT[2];
 
             uint numberDevs=1;
@@ -162,26 +163,24 @@ namespace RSPSample1
 
             uint firstSample = 0;
             int samplesPerPacket = 0, grChanged = 0, fsChanged = 0, rfChanged = 0;
-            string filename= "filename1.raw";
+            string filename= @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename1.raw";
             //change output file depending on the device.
             if (z==0)
-            { filename = "filename1.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename1.raw"; }
              else if (z==1)
-            { filename = "filename2.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename2.raw"; }
              else if (z==2)
-            { filename = "filename3.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename3.raw"; }
              else if (z==3)
-            { filename = "filename3.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename4.raw"; }
              else if (z==4)
-            { filename = "filename4.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename5.raw"; }
              else if (z==5)
-            { filename = "filename5.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename6.raw"; }
              else if (z==6)
-            { filename = "filename6.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename7.raw"; }
              else if (z==7)
-            { filename = "filename7.raw"; }
-             else if (z==8)
-            { filename = "filename8.raw"; }
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename8.raw"; }
              else
             {Console.WriteLine("For loop is messed up."); }
 
@@ -269,6 +268,7 @@ namespace RSPSample1
 
             file.Flush();
             file.Close();
+            binWriter.Close();
 
             //release Device
             r = mir_sdr_ReleaseDeviceIdx();
@@ -280,10 +280,10 @@ namespace RSPSample1
 
 
             mir_sdr_Uninit();
-            //read console
-
+            
             }
-            Console.Read();
+            //read console
+            //Console.Read();
         }
     }
 }
