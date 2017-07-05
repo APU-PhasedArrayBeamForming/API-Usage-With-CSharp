@@ -99,7 +99,7 @@ namespace RSPSample1
         {
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
-            
+
 
 
             //make loop (or if/else statements if we have to) here: for (int z=0; z<8;z++)
@@ -116,8 +116,8 @@ namespace RSPSample1
 
 
             //actual code attempt:
-
-            for (int z = 0; z < 2; z++)
+            int numberOfSDRs = 2;                                                       //only change this line to add more SDRs
+            for (int z = 0; z < numberOfSDRs; z++)                                    //this line for more devices
             {
                 mir_sdr_ErrT r;
                 //Array of structures
@@ -126,7 +126,7 @@ namespace RSPSample1
 
                 //or just have 
                 mir_sdr_DeviceT[] ourDevices;
-            ourDevices = new mir_sdr_DeviceT[2];
+            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];                           //this line for more devices (last line)
 
             uint numberDevs=1;
             uint maximumDevs=8;
