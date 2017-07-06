@@ -101,7 +101,7 @@ namespace RSPSample1
         private static extern mir_sdr_ErrT mir_sdr_Uninit();
 
 
-        //not working yet
+        //multiple devices
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_GetDevices(mir_sdr_DeviceT[] devices, ref uint numDevs, uint maxDevs);
 
@@ -116,7 +116,13 @@ namespace RSPSample1
         //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         //private static extern mir_sdr_ErrT mir_sdr_SetParam(int ParamterId, int value);
 
-   
+        //decimate
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
+
+
+
+
 
         static unsafe void Main(string[] args)
         {
@@ -220,7 +226,6 @@ namespace RSPSample1
             uint frequency = 104300000; // frequency: 104.3 MHZ (a local FM station)
             uint samp_rate = DEFAULT_SAMPLE_RATE;
                 
-            //DEFAULT_SAMPLE_RATE
 
             int i, j;
 
@@ -231,7 +236,6 @@ namespace RSPSample1
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
-                
             }
             mir_sdr_Uninit();
 
@@ -239,13 +243,25 @@ namespace RSPSample1
             mir_sdr_SetParam(202, 0);
             r = mir_sdr_Init(gain, (samp_rate / 1e6), (frequency / 1e6),
                            mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero, ref samplesPerPacket);
-
             if (r != mir_sdr_ErrT.mir_sdr_Success)
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
-               
             }
+           
+            //Decimate
+            //uint enableDecimation=0; //0 or 1 (on)
+            //uint factorOfDecimation=0; //2,4,8,16,32
+            //uint bandWideSignal=0; //half band filter or averaging
+            //r = mir_sdr_DecimateControl(enableDecimation, factorOfDecimation, bandWideSignal);
+
+            //if (r != mir_sdr_ErrT.mir_sdr_Success)
+            //{
+            //    Console.WriteLine("Failed to decimate.");
+
+            //}
+
+           
             mir_sdr_SetDcMode(4, 0);
             mir_sdr_SetDcTrackTime(63);
             ibuf = new short[samplesPerPacket];
