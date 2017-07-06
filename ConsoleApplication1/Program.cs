@@ -61,9 +61,26 @@ namespace RSPSample1
             }
         }
 
+        //setAM
+        private enum mir_sdr_RSPII_BandT
+        {
+            mir_sdr_RSPII_BAND_UNKNOWN = 0,
+            mir_sdr_RSPII_BAND_AM_LO = 1,
+            mir_sdr_RSPII_BAND_AM_MID = 2,
+            mir_sdr_RSPII_BAND_AM_HI = 3,
+            mir_sdr_RSPII_BAND_VHF = 4,
+            mir_sdr_RSPII_BAND_3 = 5,
+            mir_sdr_RSPII_BAND_X_LO = 6,
+            mir_sdr_RSPII_BAND_X_MID = 7,
+            mir_sdr_RSPII_BAND_X_HI = 8,
+            mir_sdr_RSPII_BAND_4_5 = 9,
+            mir_sdr_RSPII_BAND_L = 10
+        }
+        
 
 
-        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+
+    [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_SetParam(int ParamterId, int value);
 
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
@@ -94,6 +111,12 @@ namespace RSPSample1
 
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_ReleaseDeviceIdx();
+
+        //make AM?
+        //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        //private static extern mir_sdr_ErrT mir_sdr_SetParam(int ParamterId, int value);
+
+   
 
         static unsafe void Main(string[] args)
         {
@@ -196,6 +219,8 @@ namespace RSPSample1
             byte[] buffer = new byte[DEFAULT_BUF_LENGTH];
             uint frequency = 104300000; // frequency: 104.3 MHZ (a local FM station)
             uint samp_rate = DEFAULT_SAMPLE_RATE;
+                
+            //DEFAULT_SAMPLE_RATE
 
             int i, j;
 
