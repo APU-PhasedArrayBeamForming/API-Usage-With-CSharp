@@ -7,7 +7,7 @@ namespace RSPSample1
 {
     class Program
     {
-
+ //used with all API usages: is returned to say whether API worked or not.
         enum mir_sdr_ErrT
         {
             mir_sdr_Success = 0,
@@ -23,6 +23,7 @@ namespace RSPSample1
             mir_sdr_NotInitialised = 10
         }
 
+ //used to specify bandwidth
         private enum mir_sdr_Bw_MHzT
         {
             mir_sdr_BW_0_200 = 200,
@@ -35,6 +36,7 @@ namespace RSPSample1
             mir_sdr_BW_8_000 = 8000
         }
 
+ //specifies the IF to be used (IF means Intermediate Frequency)
         private enum mir_sdr_If_kHzT
         {
             mir_sdr_IF_Zero = 0,
@@ -43,7 +45,9 @@ namespace RSPSample1
             mir_sdr_IF_2_048 = 2048
         }
 
-        //used with getDevices
+ //all of the above are used with getting data from device. (came with C# program initiallly.) below is from us.
+ 
+ //used with getDevices
         public unsafe struct mir_sdr_DeviceT
         {
             public char* SerNo;
@@ -60,7 +64,7 @@ namespace RSPSample1
             }
         }
 
-        //setAM
+ //used to set band type (with what function idk) (not implemented yet)
         private enum mir_sdr_RSPII_BandT
         {
             mir_sdr_RSPII_BAND_UNKNOWN = 0,
@@ -76,46 +80,52 @@ namespace RSPSample1
             mir_sdr_RSPII_BAND_L = 10
         }
         
-
-
-
-    [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+//Importing each function from the API.
+ //mir_sdr_SetParam 
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_SetParam(int ParamterId, int value);
-
+ 
+ //mir_sdr_Init
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_Init(int gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
           mir_sdr_If_kHzT ifType, ref int samplesPerPacket);
 
+ //mir_sdr_SetDcMode
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_SetDcMode(int dcCal, int speedUp);
 
+ //mir_sdr_SetDcTrackTime
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_SetDcTrackTime(int trackTime);
 
+ //mir_sdr_ReadPacket
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_ReadPacket(short[] xi, short[] xq, ref uint firstSampleNum,
             ref int grChanged, ref int rfChanged, ref int fsChanged);
 
+ //mir_sdr_Uninit
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_Uninit();
 
 
-        //multiple devices
+//multiple devices (our implementations)
+ //mir_sdr_GetDevices
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_GetDevices(mir_sdr_DeviceT[] devices, ref uint numDevs, uint maxDevs);
 
-
+ //mir_sdr_SetDeviceIdx
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_SetDeviceIdx(uint idx);
 
+ //mir_sdr_ReleaseDeviceIdx
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_ReleaseDeviceIdx();
 
         //make AM?
         //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //private static extern mir_sdr_ErrT mir_sdr_SetParam(int ParamterId, int value);
+        //function here:idk which one.
 
-        //decimate
+ //mir_sdr_DecimateControl
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
 
@@ -125,43 +135,43 @@ namespace RSPSample1
 
         static unsafe void Main(string[] args)
         {
-            const int DEFAULT_SAMPLE_RATE = 2048000;
-            const int DEFAULT_BUF_LENGTH = (336 * 2);
+            const int DEFAULT_SAMPLE_RATE = 2048000;                                    
+            const int DEFAULT_BUF_LENGTH = (336 * 2);                                   //default buffer length
 
             //for loop begins
             int numberOfSDRs = 2;                                                       //only change this line to add more SDRs
-            for (int z = 0; z < numberOfSDRs; z++)                                    
+            for (int z = 0; z < numberOfSDRs; z++)                                      //for # of SDRs, read and output a file
             {
-                mir_sdr_ErrT r;
-                //or just have 
-                mir_sdr_DeviceT[] ourDevices;
-            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];
+            mir_sdr_ErrT r;                                                             //ErrT object initialized (r is used to check program API success)
+            
+            mir_sdr_DeviceT[] ourDevices;                                               //array of Device structs (look at mir_sdr_DeviceT above)
+            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];                             //expect correct # of devices from what we told it.
 
-            uint numberDevs=1;
-            uint maximumDevs=8;
-            r = mir_sdr_GetDevices( ourDevices, ref numberDevs, maximumDevs);
-            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            uint numberDevs=1;                                                          //is later changed to # of devices found by API when function is called.
+            uint maximumDevs=8;                                                         //maximum number of devices we want.
+            r = mir_sdr_GetDevices( ourDevices, ref numberDevs, maximumDevs);           //fcn: takes in array of device structs, a var to store # of devices found,
+            if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //and maximum devices we want. If it worked, r= success.
             {
-              Console.WriteLine("Failed to get the IDs of the devices.");
+              Console.WriteLine("Failed to get the IDs of the devices.");               //otherwise, print our failure.
               
             }
             
-            uint myIdx=Convert.ToUInt32(z);
-                r = mir_sdr_SetDeviceIdx(myIdx);
-            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
+                r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
+            if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //returns success or not.
             {
               Console.WriteLine("Failed to set Device ID.");
               
             }
-            //proves it is using different devices
-            //Console.WriteLine(myIdx);
+            //proves it is using different devices                                      //we trust that select device is working, so we trust it is using different
+            //Console.WriteLine(myIdx);                                                 //devices if this outputs different numbers(if you uncomment it outputs 0 first
+                                                                                        //time and 1 second time and so on) and r returns success.
 
+            //to check if it uses two different devices, doesnt work.                   //i wanted to get the device Serial Numbers to further prove using dif devices.
+            //Console.WriteLine(*ourDevices[z].SerNo);                                  //however, pointers are a pain and so SerNo and DevNm don't work here while
+            //Console.WriteLine(numberDevs); devices found with getdevices              //other DeviceT struct values are usable, we just trust SetDeviceIdk above is working.
 
-            //to check if it uses two different devices, doesnt work.
-            //Console.WriteLine(*ourDevices[z].SerNo);
-            //Console.WriteLine(numberDevs); devices found with getdevices
-
-            bool do_exit = false;
+            bool do_exit = false;                                                       //when we want to exit, we set this true.
             //i changed this from 0, otherwise it just reads forever.
             //if you have this it reads 500 Mbs and then exits. (can change to however many bytes we want).
             uint bytes_to_read = 500000;
@@ -193,46 +203,45 @@ namespace RSPSample1
              else
             {Console.WriteLine("For loop is messed up."); }
 
-
-            //string filename = "filename1.raw"; // output file, containing raw IQ samples
-            int n_read;
+            
+            int n_read;                                                                 //# of read bytes
             
 
-            int gain = 50;
-            FileStream file = new FileStream(filename, FileMode.Create);
-            BinaryWriter binWriter = new BinaryWriter(file);
+            int gain = 50;                                                              //gain reduction related idk
+            FileStream file = new FileStream(filename, FileMode.Create);                //what writes to file.
+            BinaryWriter binWriter = new BinaryWriter(file);                            //what writes to buffer (in binary)
 
-            byte[] buffer = new byte[DEFAULT_BUF_LENGTH];
-            uint frequency = 104300000; // frequency: 104.3 MHZ (a local FM station)
+            byte[] buffer = new byte[DEFAULT_BUF_LENGTH];                               //buffer creation
+            uint frequency = 104300000;                                                 // frequency: 104.3 MHZ (a local FM station)
             uint samp_rate = DEFAULT_SAMPLE_RATE;
-                
-
-            int i, j;
-
+                                                                                        //check to see if we connect to SDR(s)
+                                                                                        //mir_SDR_init: fcn: takes in gain reduction, sample frequency (MHz),
+            int i, j;                                                                   //tuner frequency(MHz), bandwidth, ifType (see top),
+                                                                                        //and the number of samples to be returned for each readpacket
             r = mir_sdr_Init(40, 2.0, 100.00, mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero,
                         ref samplesPerPacket);
 
-            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //do we connect?
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
             }
-            mir_sdr_Uninit();
+            mir_sdr_Uninit();                                                           //end connection check.
 
-            mir_sdr_SetParam(201, 1);
-            mir_sdr_SetParam(202, 0);
-            r = mir_sdr_Init(gain, (samp_rate / 1e6), (frequency / 1e6),
+            mir_sdr_SetParam(201, 1);                                                   //fcn: set different settings on SDR before init. look online.
+            mir_sdr_SetParam(202, 0);                                                   //takes in paramID and value to set.
+            r = mir_sdr_Init(gain, (samp_rate / 1e6), (frequency / 1e6),                //init again for real.
                            mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero, ref samplesPerPacket);
             if (r != mir_sdr_ErrT.mir_sdr_Success)
             {
-                Console.WriteLine("Failed to open SDRplay RSP device.");
+                Console.WriteLine("Failed to open SDRplay RSP device.");                //it work?
 
             }
-
-            //decimate
-            uint enabledecimation = 0; //0 or 1 (on)
-            uint factorofdecimation = 0; //2,4,8,16,32
-            uint bandwidesignal = 0; //half band filter or averaging
+                                                                                        //fcn: reduce sample_rate by factor
+            //decimate                                                                  
+            uint enabledecimation = 0;                                                  //0 or 1 (on)
+            uint factorofdecimation = 0;                                                //factor of: 2,4,8,16,32
+            uint bandwidesignal = 0;                                                    //half band filter or averaging (1 or 0)
             r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
 
             if (r != mir_sdr_ErrT.mir_sdr_Success)
@@ -241,15 +250,15 @@ namespace RSPSample1
 
             }
 
-
-                mir_sdr_SetDcMode(4, 0);
-            mir_sdr_SetDcTrackTime(63);
-            ibuf = new short[samplesPerPacket];
+                // configure DC tracking in tuner
+                mir_sdr_SetDcMode(4, 0);                                                // select one-shot tuner DC offset correction with speedup
+                mir_sdr_SetDcTrackTime(63);                                             // with maximum tracking time
+                ibuf = new short[samplesPerPacket];                                     //match each buffer with size.
             qbuf = new short[samplesPerPacket];
 
-            Console.WriteLine("Writing samples...");
+            Console.WriteLine("Writing samples...");                                    //their while loop which writes 8 bit I/Q to file.
             while (!do_exit)
-            {
+            {                                                                           //get packet data from API
                 r = mir_sdr_ReadPacket(ibuf, qbuf, ref firstSample, ref grChanged, ref rfChanged,
                                     ref fsChanged);
 
@@ -285,25 +294,24 @@ namespace RSPSample1
 
             file.Flush();
             file.Close();
-            binWriter.Close();
+            binWriter.Close();                                                  //this is to reset for next for loop iteration.
             binWriter.Dispose();
 
             //release Device
-            r = mir_sdr_ReleaseDeviceIdx();
+            r = mir_sdr_ReleaseDeviceIdx();                                     //let go of device so we can pick a different one. (IMPORTANT)
             if (r != mir_sdr_ErrT.mir_sdr_Success)
             {
               Console.WriteLine("Failed to release (or access for that matter) the Device.");
              
             }
-
+            //clear arrays so they can be used again in next iteration of for loop.
             Array.Clear(ibuf,0,ibuf.Length);
             Array.Clear(qbuf,0,qbuf.Length);
             Array.Clear(buffer,0,buffer.Length);
 
             mir_sdr_Uninit();
-            
             }
-            //read console
+            //read console (need to press button in console if uncommented.)
             Console.Read();
         }
     }
