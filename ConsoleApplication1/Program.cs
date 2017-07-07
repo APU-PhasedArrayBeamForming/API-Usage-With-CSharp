@@ -129,21 +129,6 @@ namespace RSPSample1
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
 
-
-
-            //make loop (or if/else statements if we have to) here: for (int z=0; z<8;z++)
-            //{
-            //mir_sdr_GetDevices()    //must be called before usage of set, returns idxs
-            //idx=z;
-            //mir_sdr_SetDeviceIdx(idx);
-            //
-            // all of this code below
-            //if z=0: output filename1, if z=1 filename2, ect.
-            // 
-            // mir_sdr_ReleaseDeviceIdx() //important!!!
-            //}
-
-
             //actual code attempt:
             int numberOfSDRs = 2;                                                       //only change this line to add more SDRs
             for (int z = 0; z < numberOfSDRs; z++)                                    //this line for more devices
