@@ -240,7 +240,7 @@ namespace RSPSample1
                                                                                         //fcn: reduce sample_rate by factor
             //decimate                                                                  
             uint enabledecimation = 0;                                                  //0 or 1 (on)
-            uint factorofdecimation = 0;                                                //factor of: 2,4,8,16,32
+            uint factorofdecimation = 16;                                                //factor of: 2,4,8,16,32
             uint bandwidesignal = 0;                                                    //half band filter or averaging (1 or 0)
             r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
 
@@ -294,7 +294,7 @@ namespace RSPSample1
 
             file.Flush();
             file.Close();
-            binWriter.Close();                                                  //this is to reset for next for loop iteration.
+            binWriter.Close();                                                  //this is to reset variables to prepare for next for loop iteration.
             binWriter.Dispose();
 
             //release Device
