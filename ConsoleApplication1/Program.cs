@@ -44,7 +44,6 @@ namespace RSPSample1
         }
 
         //used with getDevices
-        //perhaps change to a class?
         public unsafe struct mir_sdr_DeviceT
         {
             public char* SerNo;
@@ -129,18 +128,14 @@ namespace RSPSample1
             const int DEFAULT_SAMPLE_RATE = 2048000;
             const int DEFAULT_BUF_LENGTH = (336 * 2);
 
-            //actual code attempt:
+            //for loop begins
             int numberOfSDRs = 2;                                                       //only change this line to add more SDRs
-            for (int z = 0; z < numberOfSDRs; z++)                                    //this line for more devices
+            for (int z = 0; z < numberOfSDRs; z++)                                    
             {
                 mir_sdr_ErrT r;
-                //Array of structures
-                //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT();
-                //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT();
-
                 //or just have 
                 mir_sdr_DeviceT[] ourDevices;
-            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];                           //this line for more devices (last line)
+            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];
 
             uint numberDevs=1;
             uint maximumDevs=8;
@@ -233,21 +228,21 @@ namespace RSPSample1
                 Console.WriteLine("Failed to open SDRplay RSP device.");
 
             }
-           
-            //Decimate
-            //uint enableDecimation=0; //0 or 1 (on)
-            //uint factorOfDecimation=0; //2,4,8,16,32
-            //uint bandWideSignal=0; //half band filter or averaging
-            //r = mir_sdr_DecimateControl(enableDecimation, factorOfDecimation, bandWideSignal);
 
-            //if (r != mir_sdr_ErrT.mir_sdr_Success)
-            //{
-            //    Console.WriteLine("Failed to decimate.");
+            //decimate
+            uint enabledecimation = 0; //0 or 1 (on)
+            uint factorofdecimation = 0; //2,4,8,16,32
+            uint bandwidesignal = 0; //half band filter or averaging
+            r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
 
-            //}
+            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            {
+                Console.WriteLine("failed to decimate.");
 
-           
-            mir_sdr_SetDcMode(4, 0);
+            }
+
+
+                mir_sdr_SetDcMode(4, 0);
             mir_sdr_SetDcTrackTime(63);
             ibuf = new short[samplesPerPacket];
             qbuf = new short[samplesPerPacket];
@@ -275,9 +270,6 @@ namespace RSPSample1
 
                 n_read = (samplesPerPacket * 2);
 
-                //Console.WriteLine(bytes_to_read);
-                //Console.WriteLine((uint)n_read);
-
                 if ((bytes_to_read > 0) && (bytes_to_read <= (uint)n_read))
                 {
                     n_read = (int)bytes_to_read;
@@ -286,7 +278,6 @@ namespace RSPSample1
                 }
 
                 binWriter.Write(buffer);
-
 
                 if (bytes_to_read > 0)
                     bytes_to_read -= (uint)n_read;
@@ -313,7 +304,7 @@ namespace RSPSample1
             
             }
             //read console
-            //Console.Read();
+            Console.Read();
         }
     }
 }
