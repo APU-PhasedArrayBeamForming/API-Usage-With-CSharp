@@ -36,7 +36,7 @@ namespace RSPSample1
             mir_sdr_BW_8_000 = 8000
         }
 
- //specifies the IF to be used (IF means Intermediate Frequency)
+ //specifies the IF to be used (IF means Intermediate Frequency, we use 0)
         private enum mir_sdr_If_kHzT
         {
             mir_sdr_IF_Zero = 0,
@@ -129,6 +129,13 @@ namespace RSPSample1
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
 
+ //mir_sdr_StreamInit
+//        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+//        private static extern mir_sdr_ErrT mir_sdr_StreamInit(int* gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
+//mir_sdr_If_kHzT ifType, int LNAstate, int* gRdBsystem,
+//mir_sdr_SetGrModeT setGrMode, int* samplesPerPacket,
+//mir_sdr_StreamCallback_t StreamCbFn,
+//mir_sdr_GainChangeCallback_t GainChangeCbFn, void* cbContext);
 
 
 
