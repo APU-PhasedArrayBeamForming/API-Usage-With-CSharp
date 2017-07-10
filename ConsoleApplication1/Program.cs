@@ -9,7 +9,9 @@ namespace RSPSample1
 {
     class Program
     {
- //used with all API usages: is returned to say whether API worked or not.
+        private static unsafe void* cbContext2;
+
+        //used with all API usages: is returned to say whether API worked or not.
         enum mir_sdr_ErrT
         {
             mir_sdr_Success = 0,
@@ -270,7 +272,6 @@ namespace RSPSample1
             int gainReductionSys=0;
             mir_sdr_StreamCallbackDel_t StreamCbFn2= new mir_sdr_StreamCallbackDel_t(mir_sdr_StreamCallback_t);
             mir_sdr_GainChangeDel_t GainChangeCbFn2= new mir_sdr_GainChangeDel_t(mir_sdr_GainChangeCallback_t);
-            char cbContext2;
 
             r=mir_sdr_StreamInit(ref gainReduction, fsMegaHz, rfMegaHz, mir_sdr_Bw_MHzT.mir_sdr_BW_0_200,
                 mir_sdr_If_kHzT.mir_sdr_IF_0_450, LNAposition, ref gainReductionSys,
