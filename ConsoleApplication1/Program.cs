@@ -79,6 +79,14 @@ namespace RSPSample1
             mir_sdr_RSPII_BAND_4_5 = 9,
             mir_sdr_RSPII_BAND_L = 10
         }
+
+   //used with streaminit
+         private enum mir_sdr_SetGrModeT
+        {
+            mir_sdr_USE_SET_GR = 0,
+            mir_sdr_USE_SET_GR_ALT_MODE = 1,
+            mir_sdr_USE_RSP_SET_GR = 2,
+        }
         
 //Importing each function from the API.
  //mir_sdr_SetParam 
@@ -129,13 +137,28 @@ namespace RSPSample1
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
 
+ //mir_sdr_StreamCallbak_T
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private unsafe static extern void mir_sdr_StreamCallback_t(short *xi, short *xq, uint firstSampleNum,
+        int grChanged, int rfChanged, int fsChanged,
+        uint numSamples, uint reset,
+        void *cbContext);
+
+        private unsafe delegate void mir_sdr_StreamCallbackDel_t(short* xi, short* xq, uint firstSampleNum,
+        int grChanged, int rfChanged, int fsChanged,
+        uint numSamples, uint reset,
+        void* cbContext);
+        //mir_sdr_GainChangeCallback_T
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private unsafe static extern void mir_sdr_GainChangeCallback_t (uint gRidx, uint gRdB,
+        uint lnaGRdB, void *cbContext);
  //mir_sdr_StreamInit
-//        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-//        private static extern mir_sdr_ErrT mir_sdr_StreamInit(int* gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
-//mir_sdr_If_kHzT ifType, int LNAstate, int* gRdBsystem,
-//mir_sdr_SetGrModeT setGrMode, int* samplesPerPacket,
-//mir_sdr_StreamCallback_t StreamCbFn,
-//mir_sdr_GainChangeCallback_t GainChangeCbFn, void* cbContext);
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private unsafe static extern mir_sdr_ErrT mir_sdr_StreamInit(ref int gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
+            mir_sdr_If_kHzT ifType, int LNAstate, ref int gRdBsystem,
+            mir_sdr_SetGrModeT setGrMode, ref int samplesPerPacket,
+            mir_sdr_StreamCallback_T StreamCbFn,
+            mir_sdr_GainChangeCallback_t GainChangeCbFn, void* cbContext);
 
 
 
