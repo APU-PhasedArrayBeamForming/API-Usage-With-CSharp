@@ -9,6 +9,7 @@ namespace RSPSample1
 {
     class Program
     {
+        //used with streaminit (last param)
         private static unsafe void* cbContext2;
 
         //used with all API usages: is returned to say whether API worked or not.
@@ -171,11 +172,14 @@ namespace RSPSample1
             mir_sdr_SetGrModeT setGrMode, ref int samplesPerPacket,
            mir_sdr_StreamCallbackDel_t StreamCbFn,
             mir_sdr_GainChangeDel_t GainChangeCbFn, void* cbContext);
+
  //mir_sdr_StreamUninit
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_StreamUninit();
 
-
+ //mir_sdr_setGr (within streaminit there is three
+           [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")] 
+            private static extern mir_sdr_ErrT mir_sdr_RSP_SetGr(int gRdB, int LNAstate, int abs, int syncUpdate);
 
 
         static unsafe void Main(string[] args)
@@ -265,25 +269,29 @@ namespace RSPSample1
                                                                                         //and the number of samples to be returned for each readpacket
 
             //attempting to replace mir_sdr_init with mir_sdr_streaminit
-            int gainReduction=0;
+            int gainReduction=50;
             double fsMegaHz=0;
             double rfMegaHz=0;
-            int LNAposition=0;
+            int LNAposition=4;
             int gainReductionSys=0;
             mir_sdr_StreamCallbackDel_t StreamCbFn2= new mir_sdr_StreamCallbackDel_t(mir_sdr_StreamCallback_t);
             mir_sdr_GainChangeDel_t GainChangeCbFn2= new mir_sdr_GainChangeDel_t(mir_sdr_GainChangeCallback_t);
 
-            r=mir_sdr_StreamInit(ref gainReduction, fsMegaHz, rfMegaHz, mir_sdr_Bw_MHzT.mir_sdr_BW_0_200,
-                mir_sdr_If_kHzT.mir_sdr_IF_0_450, LNAposition, ref gainReductionSys,
-                mir_sdr_SetGrModeT.mir_sdr_USE_RSP_SET_GR, ref samplesPerPacket,
+            r=mir_sdr_StreamInit(ref gainReduction, fsMegaHz, rfMegaHz, mir_sdr_Bw_MHzT.mir_sdr_BW_1_536,
+                mir_sdr_If_kHzT.mir_sdr_IF_Zero, LNAposition, ref gainReductionSys,
+                mir_sdr_SetGrModeT.mir_sdr_USE_SET_GR, ref samplesPerPacket,
                 StreamCbFn2,
                 GainChangeCbFn2, cbContext2);
             
              if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //do we connect?
             {
-                Console.WriteLine("Failed to open SDRplay RSP device.");
+                Console.WriteLine("Failed to open SDRplay RSP device with streaminit.");
 
             }
+                else
+                {
+                    Console.WriteLine("Success!");
+                }
             mir_sdr_StreamUninit();                                  
 
            //end streaminit attempt
