@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
+using static System.Object;
+using static System.Delegate;
 
 namespace RSPSample1
 {
@@ -132,33 +134,40 @@ namespace RSPSample1
         //make AM?
         //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         //function here:idk which one.
-
+//functions used with streaminit
  //mir_sdr_DecimateControl
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
 
- //mir_sdr_StreamCallbak_T
+ //mir_sdr_StreamCallback_T
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private unsafe static extern void mir_sdr_StreamCallback_t(short *xi, short *xq, uint firstSampleNum,
         int grChanged, int rfChanged, int fsChanged,
         uint numSamples, uint reset,
         void *cbContext);
-
-        private unsafe delegate void mir_sdr_StreamCallbackDel_t(short* xi, short* xq, uint firstSampleNum,
+//mir_sdr_streamDelegate (function pointer)
+   
+        unsafe delegate void mir_sdr_StreamCallbackDel_t(short* xi, short* xq, uint firstSampleNum,
         int grChanged, int rfChanged, int fsChanged,
         uint numSamples, uint reset,
         void* cbContext);
-        //mir_sdr_GainChangeCallback_T
+ 
+ //mir_sdr_GainChangeCallback_T
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private unsafe static extern void mir_sdr_GainChangeCallback_t (uint gRidx, uint gRdB,
         uint lnaGRdB, void *cbContext);
+
+ //mir_sdr_GainDelegate (function pointer)
+        unsafe delegate void mir_sdr_GainChangeDel_t (uint gRidx, uint gRdB,
+        uint lnaGRdB, void *cbContext);
+
  //mir_sdr_StreamInit
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private unsafe static extern mir_sdr_ErrT mir_sdr_StreamInit(ref int gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
             mir_sdr_If_kHzT ifType, int LNAstate, ref int gRdBsystem,
             mir_sdr_SetGrModeT setGrMode, ref int samplesPerPacket,
-            mir_sdr_StreamCallback_T StreamCbFn,
-            mir_sdr_GainChangeCallback_t GainChangeCbFn, void* cbContext);
+           mir_sdr_StreamCallbackDel_t StreamCbFn,
+            mir_sdr_GainChangeDel_t GainChangeCbFn, void* cbContext);
 
 
 
