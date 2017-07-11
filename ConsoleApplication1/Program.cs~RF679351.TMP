@@ -171,7 +171,7 @@ namespace RSPSample1
 
             //to check if it uses two different devices, doesnt work.                   //i wanted to get the device Serial Numbers to further prove using dif devices.
             //Console.WriteLine(*ourDevices[z].SerNo);                                  //however, pointers are a pain and so SerNo and DevNm don't work here while
-            //Console.WriteLine(numberDevs); //devices found with getdevices              //other DeviceT struct values are usable, we just trust SetDeviceIdk above is working.
+            Console.WriteLine(numberDevs); devices found with getdevices              //other DeviceT struct values are usable, we just trust SetDeviceIdk above is working.
 
             bool do_exit = false;                                                       //when we want to exit, we set this true.
             //i changed this from 0, otherwise it just reads forever.
@@ -280,11 +280,9 @@ namespace RSPSample1
                 qbuf = new short[samplesPerPacket];
                 input = new short[origibuf.Length];
                 uint M=4;
-                uint reset=1;
                 Array.Copy(origibuf,input, origibuf.Length);
-                uint packetSamples=Convert.ToUInt32(samplesPerPacket);
-                mir_sdr_DownConvert(input, ibuf, qbuf,
-                    packetSamples, mir_sdr_If_kHzT.mir_sdr_IF_Zero, M, reset);
+                 mir_sdr_DownConvert(input, ibuf, qbuf,
+                 samplesPerPacket, mir_sdr_If_kHzT.mir_sdr_IF_Zero, M, uint preReset);
 
                     j = 0;
                 for (i = 0; i < samplesPerPacket; i++)
@@ -325,8 +323,6 @@ namespace RSPSample1
             //clear arrays so they can be used again in next iteration of for loop.
             Array.Clear(origibuf,0,origibuf.Length);
             Array.Clear(origqbuf,0,origqbuf.Length);
-            //Array.Clear(origibuf,0,ibuf.Length);
-            //Array.Clear(origqbuf,0,qbuf.Length);
             Array.Clear(buffer,0,buffer.Length);
 
             mir_sdr_Uninit();
