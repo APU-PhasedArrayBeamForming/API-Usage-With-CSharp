@@ -129,18 +129,10 @@ namespace RSPSample1
         [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
         private static extern mir_sdr_ErrT mir_sdr_DecimateControl(uint enable, uint decimationFactor, uint wideBandSignal);
 
-        //mir_sdr_StreamInit
-        //        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //        private static extern mir_sdr_ErrT mir_sdr_StreamInit(int* gRdB, double fsMHz, double rfMHz, mir_sdr_Bw_MHzT bwType,
-        //mir_sdr_If_kHzT ifType, int LNAstate, int* gRdBsystem,
-        //mir_sdr_SetGrModeT setGrMode, int* samplesPerPacket,
-        //mir_sdr_StreamCallback_t StreamCbFn,
-        //mir_sdr_GainChangeCallback_t GainChangeCbFn, void* cbContext);
-
  //mir_sdr_Downconvert
-        //[DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
-        //mir_sdr_ErrT mir_sdr_DownConvert(short*in, short* xi, short* xq,
-        //uint samplesPerPacket, mir_sdr_If_kHzT ifType, uint M, uint preReset);
+        [DllImport("C:\\Program Files\\SDRplay\\API\\x86\\mir_sdr_api.dll")]
+        private static extern mir_sdr_ErrT mir_sdr_DownConvert(short[] input, short[] xi, short[] xq,
+        uint samplesPerPacket, mir_sdr_If_kHzT ifType, uint M, uint preReset);
 
 
         static unsafe void Main(string[] args)
@@ -239,24 +231,12 @@ namespace RSPSample1
             mir_sdr_Uninit();                                                           //end connection check.
 
             mir_sdr_SetParam(201, 1);                                                   //fcn: set different settings on SDR before init. look online.
-            mir_sdr_SetParam(202, 0);                                                   //takes in paramID and value to set.
+            mir_sdr_SetParam(202, 0);                                                   //takes in paramID and value to set. figure this out what is it
             r = mir_sdr_Init(gain, (samp_rate / 1e6), (frequency / 1e6),                //init again for real.
                            mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero, ref samplesPerPacket);
             if (r != mir_sdr_ErrT.mir_sdr_Success)
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");                //it work?
-
-            }
-                                                                                        //fcn: reduce sample_rate by factor
-            //decimate                                                                  
-            uint enabledecimation = 0;                                                  //0 or 1 (on)
-            uint factorofdecimation = 16;                                                //factor of: 2,4,8,16,32
-            uint bandwidesignal = 0;                                                    //half band filter or averaging (1 or 0)
-            r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
-
-            if (r != mir_sdr_ErrT.mir_sdr_Success)
-            {
-                Console.WriteLine("failed to decimate.");
 
             }
 
