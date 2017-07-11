@@ -224,7 +224,7 @@ namespace RSPSample1
                                                                                         //mir_SDR_init: fcn: takes in gain reduction, sample frequency (MHz),
             int i, j;                                                                   //tuner frequency(MHz), bandwidth, ifType (see top),
                                                                                         //and the number of samples to be returned for each readpacket
-            r = mir_sdr_Init(40, 2.0, 100.00, mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero,
+            r = mir_sdr_Init(40, 2.0, 100.00, mir_sdr_Bw_MHzT.mir_sdr_BW_0_200, mir_sdr_If_kHzT.mir_sdr_IF_Zero,
                         ref samplesPerPacket);
 
             if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //do we connect?
@@ -237,7 +237,7 @@ namespace RSPSample1
             mir_sdr_SetParam(201, 1);                                                   //fcn: set different settings on SDR before init. look online.
             mir_sdr_SetParam(202, 0);                                                   //takes in paramID and value to set. figure this out what is it
             r = mir_sdr_Init(gain, (samp_rate / 1e6), (frequency / 1e6),                //init again for real.
-                           mir_sdr_Bw_MHzT.mir_sdr_BW_1_536, mir_sdr_If_kHzT.mir_sdr_IF_Zero, ref samplesPerPacket);
+                           mir_sdr_Bw_MHzT.mir_sdr_BW_0_200, mir_sdr_If_kHzT.mir_sdr_IF_Zero, ref samplesPerPacket);
             if (r != mir_sdr_ErrT.mir_sdr_Success)
             {
                 Console.WriteLine("Failed to open SDRplay RSP device.");                //it work?
