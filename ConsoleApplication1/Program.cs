@@ -239,6 +239,18 @@ namespace RSPSample1
                 Console.WriteLine("Failed to open SDRplay RSP device.");                //it work?
 
             }
+                                                                                        //fcn: reduce sample_rate by factor
+            //decimate                                                                  
+            uint enabledecimation = 0;                                                  //0 or 1 (on)
+            uint factorofdecimation = 16;                                                //factor of: 2,4,8,16,32
+            uint bandwidesignal = 0;                                                    //half band filter or averaging (1 or 0)
+            r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
+
+            if (r != mir_sdr_ErrT.mir_sdr_Success)
+            {
+                Console.WriteLine("failed to decimate.");
+
+            }
 
                 // configure DC tracking in tuner
                 mir_sdr_SetDcMode(4, 0);                                                // select one-shot tuner DC offset correction with speedup
