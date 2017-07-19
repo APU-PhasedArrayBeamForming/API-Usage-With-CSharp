@@ -150,15 +150,17 @@ namespace RSPSample1
             mir_sdr_ErrT r;                                                             //ErrT object initialized (r is used to check program API success)
             
             //keyword
+            string testing1 = "2468101214";
             string test1= "1234567890";                                                 //these are basically object properties (struct properties)
             string test2 = "0";                                                         //to be put into our device array to be populated with stuff from API
             byte test3 = 0;
             byte test4 = 0;
 
             IntPtr T1 = Marshal.StringToHGlobalUni(test1);                              //turn strings into IntPtr's so they fit into our struct (object)
-            IntPtr T2 = Marshal.StringToHGlobalUni(test2);                              
+            IntPtr T2 = Marshal.StringToHGlobalUni(test2);
+            IntPtr T3 = Marshal.StringToHGlobalUni(testing1);                              
             mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);    //make both devices
-            mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);
+            mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T3, T2, test3, test4);
 
             mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice}; //stick devices into array that will be updated with real devices
             
@@ -172,7 +174,9 @@ namespace RSPSample1
             }
 
             //print serial number
-            Console.WriteLine(ourDevices[z].SerNo);
+            string josh = Marshal.PtrToStringUni(ourDevices[z].SerNo);
+            //Console.WriteLine(ourDevices[z].SerNo);
+            Console.WriteLine(josh);
 
             uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
                 r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
