@@ -150,17 +150,17 @@ namespace RSPSample1
             mir_sdr_ErrT r;                                                             //ErrT object initialized (r is used to check program API success)
             
             //keyword
-            string test1= "1234567890";
-            string test2 = "0";
+            string test1= "1234567890";                                                 //these are basically object properties (struct properties)
+            string test2 = "0";                                                         //to be put into our device array to be populated with stuff from API
             byte test3 = 0;
             byte test4 = 0;
 
-            IntPtr T1 = Marshal.StringToHGlobalUni(test1);
-            IntPtr T2 = Marshal.StringToHGlobalUni(test2);
-            mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);
+            IntPtr T1 = Marshal.StringToHGlobalUni(test1);                              //turn strings into IntPtr's so they fit into our struct (object)
+            IntPtr T2 = Marshal.StringToHGlobalUni(test2);                              
+            mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);    //make both devices
             mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);
 
-            mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice};
+            mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice}; //stick devices into array that will be updated with real devices
             
 
             uint numberDevs=1;                                                          //is later changed to # of devices found by API when function is called.
