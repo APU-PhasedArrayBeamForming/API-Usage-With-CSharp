@@ -66,22 +66,6 @@ namespace RSPSample1
             }
         }
 
-        public unsafe struct mir_sdr_DeviceTwo
-        {
-            public string SerNo;
-            public string DevNm;
-            public byte hwVer;
-            public byte devAvail;
-
-            public mir_sdr_DeviceTwo(string p1, string p2, byte p3, byte p4)
-            {
-                SerNo = p1;
-                DevNm = p2;
-                hwVer = p3;
-                devAvail = p4;
-            }
-        }
-
         //used to set band type (with what function idk) (not implemented yet)
         private enum mir_sdr_RSPII_BandT
         {
@@ -170,53 +154,25 @@ namespace RSPSample1
             string test2 = "0";
             byte test3 = 0;
             byte test4 = 0;
-            mir_sdr_DeviceTwo firstDevice = new mir_sdr_DeviceTwo(test1, test2, test3, test4);
-            mir_sdr_DeviceTwo secondDevice = new mir_sdr_DeviceTwo(test1, test2, test3, test4);
-            
-            IntPtr T1 = Marshal.StringToHGlobalUni(test1 );
-            IntPtr T2 = Marshal.StringToHGlobalUni(test2 );
-            mir_sdr_DeviceT firstDevice1 = new mir_sdr_DeviceT(T1, T2, test3, test4);
-            mir_sdr_DeviceT secondDevice1 = new mir_sdr_DeviceT(T1, T2, test3, test4);
-            
 
-            //mir_sdr_DeviceT[] ourDevices;                                               //array of Device structs (look at mir_sdr_DeviceT above)
-            //ourDevices = new mir_sdr_DeviceT[numberOfSDRs];                             //expect correct # of devices from what we told it.
-            //mir_sdr_DeviceTwo[]ourDevices2 = new mir_sdr_DeviceTwo[] { firstDevice, secondDevice};
-            //Console.WriteLine(ourDevices2[z].SerNo);
+            IntPtr T1 = Marshal.StringToHGlobalUni(test1);
+            IntPtr T2 = Marshal.StringToHGlobalUni(test2);
+            mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);
+            mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);
 
-            mir_sdr_DeviceT[]ourDevices3 = new mir_sdr_DeviceT[] { firstDevice1, secondDevice1};
+            mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice};
             
 
-            //keyword
             uint numberDevs=1;                                                          //is later changed to # of devices found by API when function is called.
             uint maximumDevs=8;                                                         //maximum number of devices we want.
-            r = mir_sdr_GetDevices( ourDevices3, ref numberDevs, maximumDevs);           //fcn: takes in array of device structs, a var to store # of devices found,
+            r = mir_sdr_GetDevices( ourDevices, ref numberDevs, maximumDevs);           //fcn: takes in array of device structs, a var to store # of devices found,
             if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //and maximum devices we want. If it worked, r= success.
             {
               Console.WriteLine("Failed to get the IDs of the devices.");               //otherwise, print our failure.
-              
             }
 
-            Console.WriteLine(ourDevices3[z].SerNo);
-            //keyword
-            //string s = Marshal.PtrToStringAnsi((IntPtr)ourDevices[z].DevNm);
-            //string s = new string(ourDevices[z].SerNo);
-            //Console.WriteLine(s);
-            //Console.WriteLine(ourDevices[z].devAvail); 
-            //Console.WriteLine(ourDevices[z].SerNo);
-            //Console.WriteLine(ourDevices[z].SerNo.ToString());
-            
-
-           //keyword
-           string a= "1";
-           
-            
-            //test with own devices
-            //string test1= "1234567890";
-            //string test2 = "0";
-            //byte test3 = 0;
-            //byte test4 = 0;
-            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(test1, test2, test3, test4);
+            //print serial number
+            Console.WriteLine(ourDevices[z].SerNo);
 
             uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
                 r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
