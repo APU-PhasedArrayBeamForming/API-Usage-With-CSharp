@@ -157,7 +157,21 @@ namespace RSPSample1
               Console.WriteLine("Failed to get the IDs of the devices.");               //otherwise, print our failure.
               
             }
+
+            //test with own devices
+            //char test1= "0;
+            //char test2 = 0;
+            //byte test3 = 0;
+            //byte test4 = 0;
+            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(ref test1, ref test2, test3, test4);
             
+            //
+            //unsafe
+            //    {
+            //Console.WriteLine(*ourDevices[z].SerNo);
+            //    }
+
+
             uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
                 r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
             if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //returns success or not.
@@ -170,7 +184,8 @@ namespace RSPSample1
                                                                                         //time and 1 second time and so on) and r returns success.
 
             //to check if it uses two different devices, doesnt work.                   //i wanted to get the device Serial Numbers to further prove using dif devices.
-            //Console.WriteLine(*ourDevices[z].SerNo);                                  //however, pointers are a pain and so SerNo and DevNm don't work here while
+            //Console.WriteLine(ourDevices[z].devAvail);                                  //however, pointers are a pain and so SerNo and DevNm don't work here while
+            
             //Console.WriteLine(numberDevs); //devices found with getdevices              //other DeviceT struct values are usable, we just trust SetDeviceIdk above is working.
 
             bool do_exit = false;                                                       //when we want to exit, we set this true.
@@ -218,7 +233,7 @@ namespace RSPSample1
             BinaryWriter binWriter = new BinaryWriter(file);                            //what writes to buffer (in binary)
 
             byte[] buffer = new byte[DEFAULT_BUF_LENGTH];                               //buffer creation
-            uint frequency = 104300000;                                                 // frequency: 104.3 MHZ (a local FM station)
+            uint frequency = 109000000;                                                 // frequency: 104.3 MHZ (a local FM station)
             uint samp_rate = DEFAULT_SAMPLE_RATE;
                                                                                         //check to see if we connect to SDR(s)
                                                                                         //mir_SDR_init: fcn: takes in gain reduction, sample frequency (MHz),
