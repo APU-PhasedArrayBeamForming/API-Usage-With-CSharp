@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
+using System.Management;
 
 namespace RSPSample1
 {
@@ -140,6 +141,19 @@ namespace RSPSample1
 
         static unsafe void Main(string[] args)
         {
+            // add a reference to the System.Management assembly and
+            // import the System.Management namespace at the top in your "using" statement.
+            // Then in a method, or on a button click:
+
+            ManagementObjectSearcher theSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive WHERE InterfaceType='USB'");
+            foreach (ManagementObject currentObject in theSearcher.Get())
+            {
+                ManagementObject theSerialNumberObjectQuery = new ManagementObject("Win32_PhysicalMedia.Tag='" + currentObject["DeviceID"] + "'");
+                //System.Windows.Forms.MessageBox.Show(theSerialNumberObjectQuery["SerialNumber"].ToString());
+                Console.WriteLine(theSerialNumberObjectQuery["SerialNumber"].ToString());
+                //Console.WriteLine("it ran.");
+            }
+            
             const int DEFAULT_SAMPLE_RATE = 2048000;                                    
             const int DEFAULT_BUF_LENGTH = (336 * 2);                                   //default buffer length
 
