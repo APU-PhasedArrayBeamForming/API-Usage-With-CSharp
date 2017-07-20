@@ -144,7 +144,7 @@ namespace RSPSample1
             const int DEFAULT_BUF_LENGTH = (336 * 2);                                   //default buffer length
 
             //for loop begins
-            int numberOfSDRs = 2;                                                       //only change this line to add more SDRs
+            int numberOfSDRs = 1;                                                       //only change this line to add more SDRs
             for (int z = 0; z < numberOfSDRs; z++)                                      //for # of SDRs, read and output a file
             {
             mir_sdr_ErrT r;                                                             //ErrT object initialized (r is used to check program API success)
@@ -175,12 +175,13 @@ namespace RSPSample1
             }
 
             //print serial number
-            string josh = Marshal.PtrToStringUni(ourDevices[z].SerNo);
+            //string josh = Marshal.PtrToStringUni(ourDevices[z].SerNo);
             //Console.WriteLine(ourDevices[z].SerNo);
-            Console.WriteLine(josh);
+            //Console.WriteLine(josh);
 
             uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
                 r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
+            //Console.WriteLine(myIdx);
             if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //returns success or not.
             {
               Console.WriteLine("Failed to set Device ID.");
@@ -214,6 +215,8 @@ namespace RSPSample1
             //change output file depending on the device.
             if (z==0)
             { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename1.raw"; }
+            else if (z==0&&numberOfSDRs==1)
+            { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename5.raw"; }
              else if (z==1)
             { filename = @"C:\\Users\\Justin\\Documents\\Visual Studio 2015\\Projects\\ConsoleApplication1\\ConsoleApplication1\\bin\\Debug\\filename2.raw"; }
              else if (z==2)
