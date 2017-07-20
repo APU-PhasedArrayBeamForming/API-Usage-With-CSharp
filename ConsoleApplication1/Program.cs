@@ -156,14 +156,15 @@ namespace RSPSample1
             byte test3 = 0;
             byte test4 = 0;
 
-            IntPtr T1 = Marshal.StringToHGlobalUni(test1);                              //turn strings into IntPtr's so they fit into our struct (object)
-            IntPtr T2 = Marshal.StringToHGlobalUni(test2);
-            IntPtr T3 = Marshal.StringToHGlobalUni(testing1);                              
-            mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);    //make both devices
-            mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T3, T2, test3, test4);
+            //IntPtr T1 = Marshal.StringToHGlobalUni(test1);                              //turn strings into IntPtr's so they fit into our struct (object)
+            //IntPtr T2 = Marshal.StringToHGlobalUni(test2);
+            //IntPtr T3 = Marshal.StringToHGlobalUni(testing1);                              
+            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);    //make both devices
+            //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T3, T2, test3, test4);
 
-            mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice}; //stick devices into array that will be updated with real devices
-            
+            //mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice}; //stick devices into array that will be updated with real devices
+            mir_sdr_DeviceT[] ourDevices;                                               //array of Device structs (look at mir_sdr_DeviceT above)
+            ourDevices = new mir_sdr_DeviceT[numberOfSDRs];
 
             uint numberDevs=1;                                                          //is later changed to # of devices found by API when function is called.
             uint maximumDevs=8;                                                         //maximum number of devices we want.
