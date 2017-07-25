@@ -141,18 +141,6 @@ namespace RSPSample1
 
         static unsafe void Main(string[] args)
         {
-            // add a reference to the System.Management assembly and
-            // import the System.Management namespace at the top in your "using" statement.
-            // Then in a method, or on a button click:
-
-            ManagementObjectSearcher theSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive WHERE InterfaceType='USB'");
-            foreach (ManagementObject currentObject in theSearcher.Get())
-            {
-                ManagementObject theSerialNumberObjectQuery = new ManagementObject("Win32_PhysicalMedia.Tag='" + currentObject["DeviceID"] + "'");
-                //System.Windows.Forms.MessageBox.Show(theSerialNumberObjectQuery["SerialNumber"].ToString());
-                Console.WriteLine(theSerialNumberObjectQuery["SerialNumber"].ToString());
-                //Console.WriteLine("it ran.");
-            }
             
             const int DEFAULT_SAMPLE_RATE = 2048000;                                    
             const int DEFAULT_BUF_LENGTH = (336 * 2);                                   //default buffer length
@@ -162,21 +150,7 @@ namespace RSPSample1
             for (int z = 0; z < numberOfSDRs; z++)                                      //for # of SDRs, read and output a file
             {
             mir_sdr_ErrT r;                                                             //ErrT object initialized (r is used to check program API success)
-            
-            //keyword
-            string testing1 = "2468101214";
-            string test1= "1234567890";                                                 //these are basically object properties (struct properties)
-            string test2 = "0";                                                         //to be put into our device array to be populated with stuff from API
-            byte test3 = 0;
-            byte test4 = 0;
 
-            //IntPtr T1 = Marshal.StringToHGlobalUni(test1);                              //turn strings into IntPtr's so they fit into our struct (object)
-            //IntPtr T2 = Marshal.StringToHGlobalUni(test2);
-            //IntPtr T3 = Marshal.StringToHGlobalUni(testing1);                              
-            //mir_sdr_DeviceT firstDevice = new mir_sdr_DeviceT(T1, T2, test3, test4);    //make both devices
-            //mir_sdr_DeviceT secondDevice = new mir_sdr_DeviceT(T3, T2, test3, test4);
-
-            //mir_sdr_DeviceT[]ourDevices = new mir_sdr_DeviceT[] { firstDevice, secondDevice}; //stick devices into array that will be updated with real devices
             mir_sdr_DeviceT[] ourDevices;                                               //array of Device structs (look at mir_sdr_DeviceT above)
             ourDevices = new mir_sdr_DeviceT[numberOfSDRs];
 
@@ -188,27 +162,13 @@ namespace RSPSample1
               Console.WriteLine("Failed to get the IDs of the devices.");               //otherwise, print our failure.
             }
 
-            //print serial number
-            //string josh = Marshal.PtrToStringUni(ourDevices[z].SerNo);
-            //Console.WriteLine(ourDevices[z].SerNo);
-            //Console.WriteLine(josh);
-
             uint myIdx=Convert.ToUInt32(z);                                             //convert for loop counter (z) to uint, store in myIdx
                 r = mir_sdr_SetDeviceIdx(myIdx);                                        //fcn: takes in which device you want (myIdx), -we use # of devices in for loop
             //Console.WriteLine(myIdx);
             if (r != mir_sdr_ErrT.mir_sdr_Success)                                      //returns success or not.
             {
-              Console.WriteLine("Failed to set Device ID.");
-              
+              Console.WriteLine("Failed to set Device ID."); 
             }
-            //proves it is using different devices                                      //we trust that select device is working, so we trust it is using different
-           //Console.WriteLine(myIdx);                                                 //devices if this outputs different numbers(if you uncomment it outputs 0 first
-                                                                                        //time and 1 second time and so on) and r returns success.
-
-            //to check if it uses two different devices, doesnt work.                   //i wanted to get the device Serial Numbers to further prove using dif devices.
-            //Console.WriteLine(ourDevices[z].devAvail);                                  //however, pointers are a pain and so SerNo and DevNm don't work here while
-            
-            //Console.WriteLine(numberDevs); //devices found with getdevices              //other DeviceT struct values are usable, we just trust SetDeviceIdk above is working.
 
             bool do_exit = false;                                                       //when we want to exit, we set this true.
             //i changed this from 0, otherwise it just reads forever.
@@ -301,18 +261,6 @@ namespace RSPSample1
                     Console.WriteLine("WARNING: ReadPacket failed.");
                     break;
                 }
-
-                    ////decimate                                                                  
-                    //uint enabledecimation = 0;                                                  //0 or 1 (on)
-                    //uint factorofdecimation = 16;                                                //factor of: 2,4,8,16,32
-                    //uint bandwidesignal = 0;                                                    //half band filter or averaging (1 or 0)
-                    //r = mir_sdr_DecimateControl(enabledecimation, factorofdecimation, bandwidesignal);
-
-                    //if (r != mir_sdr_ErrT.mir_sdr_Success)
-                    //{
-                    //    Console.WriteLine("failed to decimate.");
-
-                    //}
                 
                 //downconvert
                 ibuf = new short[samplesPerPacket];                                     //match each buffer with size.
@@ -364,14 +312,12 @@ namespace RSPSample1
             //clear arrays so they can be used again in next iteration of for loop.
             Array.Clear(origibuf,0,origibuf.Length);
             Array.Clear(origqbuf,0,origqbuf.Length);
-            //Array.Clear(origibuf,0,ibuf.Length);
-            //Array.Clear(origqbuf,0,qbuf.Length);
             Array.Clear(buffer,0,buffer.Length);
 
             mir_sdr_Uninit();
             }
             //read console (need to press button in console if uncommented.)
-            Console.Read();
+            //Console.Read();
         }
     }
 }
